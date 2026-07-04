@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: resume.tex
+
+      - name: Rename PDF
+        run: mv resume.pdf connor-reinholdtsen-resume.pdf
+
+      - name: Upload PDF as artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: resume-pdf
+          path: connor-reinholdtsen-resume.pdf
+          if-no-files-found: error
